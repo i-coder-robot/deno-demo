@@ -22,26 +22,23 @@ router.get("/getUser", async (context: any) => {
     }
 })
 
-// router.get("/getUser/:id", (context: any) => {
-//     try {
-//         const decoder = new TextDecoder("utf-8")
-//         const data = Deno.readFileSync("./user.json")
-//         console.log(decoder.decode(data))
-//         const users = JSON.parse(decoder.decode(data))
-//         if (context.params && context.params.id) {
-//             const user = users[context.params.id - 1]
-//             context.response.body = user
-//         } else {
-//             context.response.status = 404
-//             context.response.body = `用户ID ${context.params.id} 不存在~`
-//         }
-//     } catch (err) {
-//         console.log(err)
-//         context.response.status = 500;
-//         context.response.body = err
-//     }
-//
-// })
+router.get("/getUser/:id", async (context: any) => {
+    try {
+        if (context.params && context.params.id) {
+            const user = await client.query("select ??,?? from ?? where id=?",
+                ["id","name","User",context.params.id])
+            context.response.body = user
+        } else {
+            context.response.status = 404
+            context.response.body = `用户ID ${context.params.id} 不存在~`
+        }
+    } catch (err) {
+        console.log(err)
+        context.response.status = 500;
+        context.response.body = err
+    }
+
+})
 //
 // router.post("/addUser", (context: any) => {
 //     try {
